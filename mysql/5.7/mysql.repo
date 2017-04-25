@@ -1,0 +1,4 @@
+[mysql-5.7]
+name=mysql-5.7
+baseurl=https://mirrors.tuna.tsinghua.edu.cn/mysql/yum/mysql57-community-el7
+gpgcheck=0
