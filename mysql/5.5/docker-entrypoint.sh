@@ -2,15 +2,15 @@
 set -e
 MYSQL_DATABASE=${MYSQL_DATABASE:-""}
 MYSQL_USER=${MYSQL_USER:-"root"}
-MYSQL_PASSWORD=${MYSQL_PASSWORD:-$(pwgen -s 12 1)}
-MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD:-$(pwgen -s 12 1)}
-MYSQL_NEW=true
+MYSQL_PASSWORD=${MYSQL_PASSWORD:-""}
+MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD:-""}
+MYSQL_TEST="${DATA_DIR}/mysql"
 
 #
 #  Mysql setup
 #
 run_mysql() {
-
+if [[ ! -d ${DATA_TEST} ]]; then
         echo "===> Initializing mysql database... "
 	   	mysql_install_db --user=mysql --ldata=${DATA_DIR}
         echo "===> System databases initialized..."
@@ -63,18 +63,19 @@ mysql -uroot  < $tfile
 kill -9 `ps -aux|grep mysql|grep -v grep|awk '{print $2}'`
 sleep 1
 rm -f $tfile
-
+fi
 }
 run_mysql
 
-echo "========================================================================"
-echo "You can now connect to this MySQL5.5 server using:"
-echo "                                                                        "
+echo "==================================================================================================="
+echo "			     You can now connect to this MySQL5.5 server using:				 "
+echo "													 "
+echo "  MYSQL_ROOT_PASSWORD DEFAULT IS NULL.                                                             "
 echo "  MYSQL_USER:$MYSQL_USER, MYSQL_PASSWORD:$MYSQL_PASSWORD, MYSQL_ROOT_PASSWORD:$MYSQL_ROOT_PASSWORD " 
-echo "  mysql -u$MYSQL_USER -p$MYSQL_PASSWORD or $MYSQL_ROOT_PASSWORD --host <host> --port <port>"
-echo "                                                                        "
-echo "Please remember to change the above password as soon as possible!"
-echo "========================================================================"
+echo "  mysql -u$MYSQL_USER -p$MYSQL_PASSWORD or $MYSQL_ROOT_PASSWORD --host <host> --port <port>        "
+echo "                                                                        				 "
+echo "  Please remember to change the above password as soon as possible!					 "
+echo "==================================================================================================="
 
 mysqld --user mysql &> /dev/null
 fg

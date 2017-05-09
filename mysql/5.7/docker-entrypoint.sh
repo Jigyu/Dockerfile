@@ -2,14 +2,14 @@
 set -e
 MYSQL_DATABASE=${MYSQL_DATABASE:-""}
 MYSQL_USER=${MYSQL_USER:-"root"}
-MYSQL_PASSWORD=${MYSQL_PASSWORD:-"$(pwgen -s 12 1)"}
-MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD:-$(pwgen -s 12 1)}
-
+MYSQL_PASSWORD=${MYSQL_PASSWORD:-""}
+MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD:-""}
+MYSQL_TEST="${DATA_DIR}/mysql"
 #
 #  Mysql setup
 #
 run_mysql() {
-
+if [[ ! -d ${DATA_TEST} ]]; then
     echo "===> Initializing mysql database... "
     cd /usr/bin/
     mysqld --initialize-insecure --user=mysql &> /tmp/tmp.txt 
@@ -62,16 +62,18 @@ rm -f $tfile
 rm -f /tmp/tmp.txt
 
 kill -9 `ps -aux |grep mysqld|grep -v "grep" |awk '{print $2}'`
+fi
 }
 run_mysql
 
-echo "========================================================================"
-echo "You can now connect to this MySQL5.7 server using:"
-echo "                                                                        "
+echo "==================================================================================================="
+echo "                   You can now connect to this MySQL5.7 server using:				 "
+echo "                                                                       				 "
+echo "  MYSQL_ROOT_PASSWORD DEFAULT IS NULL.								 "
 echo "  MYSQL_USER:$MYSQL_USER, MYSQL_PASSWORD:$MYSQL_PASSWORD, MYSQL_ROOT_PASSWORD:$MYSQL_ROOT_PASSWORD " 
-echo "  mysql -u$MYSQL_USER -p$MYSQL_PASSWORD or $MYSQL_ROOT_PASSWORD --host <host> --port <port>"
-echo "                                                                        "
-echo "Please remember to change the above password as soon as possible!"
-echo "========================================================================"
+echo "  mysql -u$MYSQL_USER -p$MYSQL_PASSWORD or $MYSQL_ROOT_PASSWORD --host <host> --port <port>        "
+echo "                                                                        				 "
+echo "  Please remember to change the above password as soon as possible!                                  "
+echo "==================================================================================================="
 
 exec mysqld --daemonize
